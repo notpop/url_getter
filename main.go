@@ -12,6 +12,7 @@ import (
 )
 
 const TARGET_URL = "https://www.youtube.com/"
+// const TARGET_URL = "https://www.youtube.com/watch?v=dQAGDdkW4ag"
 
 const TEMPORARY_HTML_FILE_PATH = "./htmls/target.html"
 
@@ -41,8 +42,8 @@ func main() {
 	if error != nil {
 			fmt.Print("html load failed")
 	}
-	doc.Find("img").Each(func(_ int, s *goquery.Selection) {
-			url, _ := s.Attr("src")
+	doc.Find("a").Each(func(_ int, s *goquery.Selection) {
+			url, _ := s.Attr("href")
 			fmt.Println(url)
 	})
 }
