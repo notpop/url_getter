@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/notpop/url_getter/config"
+	"github.com/notpop/url_getter/models"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,14 +13,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const TARGET_URL = "https://www.youtube.com/"
-
-// const TARGET_URL = "https://www.youtube.com/watch?v=dQAGDdkW4ag"
-
-const TEMPORARY_HTML_FILE_PATH = "./htmls/target.html"
-
 func main() {
-	response, error := http.Get(TARGET_URL)
+	response, error := http.Get(config.Config.TargetUrl)
 	if error != nil {
 		log.Fatal(error)
 	}
@@ -27,7 +23,7 @@ func main() {
 		log.Fatalf("status code error: %d %s", response.StatusCode, response.Status)
 	}
 
-	document, error := goquery.NewDocument(TARGET_URL)
+	document, error := goquery.NewDocument(config.Config.TargetUrl)
 	if error != nil {
 		fmt.Print("connection is failed")
 	}
@@ -35,16 +31,20 @@ func main() {
 	if error != nil {
 		fmt.Print("document body get failed")
 	}
-	ioutil.WriteFile(TEMPORARY_HTML_FILE_PATH, []byte(body), os.ModePerm)
+	ioutil.WriteFile(config.Config.GetHtmlPath, []byte(body), os.ModePerm)
 
-	html, _ := ioutil.ReadFile(TEMPORARY_HTML_FILE_PATH)
+	html, _ := ioutil.ReadFile(config.Config.GetHtmlPath)
 	stringReader := strings.NewReader(string(html))
 	doc, error := goquery.NewDocumentFromReader(stringReader)
 	if error != nil {
 		fmt.Print("html load failed")
 	}
-	doc.Find("a").Each(func(_ int, s *goquery.Selection) {
+
+	doc.Find(".article-title-outer > a").Each(func(_ int, s *goquery.Selection) {
 		url, _ := s.Attr("href")
-		fmt.Println(url)
+		targetUrl := models.NewTargetUrl(url, config.Config.TargetUrl)
+		if !models.IsTargetUrl(url) {
+			targetUrl.Create()
+		}
 	})
 }
