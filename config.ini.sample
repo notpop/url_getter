@@ -1,0 +1,7 @@
+[web]
+target_url = XXXXXXXXXXXXXXXXXXX
+get_html_path = ./htmls/target.html
+
+[db]
+name = stockdata.sql
+driver = sqlite3
