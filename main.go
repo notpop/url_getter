@@ -5,7 +5,6 @@ import (
 	"github.com/notpop/url_getter/crawl"
 	"github.com/notpop/url_getter/models"
 	"log"
-
 	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
@@ -56,7 +55,7 @@ func main() {
 		}
 
 		document.Find(config.Config.SubSelector).Each(func(_ int, s *goquery.Selection) {
-			url, _ := s.Attr("href")
+			url, _ := s.Attr("src")
 			// 新規テーブルに保存
 			targetUrl := models.NewTargetUrl(url, config.Config.TargetUrl)
 			if !models.IsTargetUrl(url) {
