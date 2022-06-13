@@ -1,6 +1,9 @@
 [web]
 target_url = XXXXXXXXXXXXXXXXXXX
-get_html_path = ./htmls/target.html
+get_html_path = ./htmls/origin_source.html
+search_limit = 10000
+origin_source_selector = .article-title-outer > a
+sub_selector = .article-title-outer > a
 
 [db]
 name = stockdata.sql
