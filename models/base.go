@@ -34,8 +34,8 @@ func init() {
 		CREATE TABLE IF NOT EXISTS %s (
 			image_source_url STRING PRIMARY KEY NOT NULL,
 			target_url STRING NOT NULL,
-			storage_directory_path STRING NOT NULL,
-			storage_file_path STRING NOT NULL,
-			storage_full_path STRING NOT NULL)`, TABLE_NAME_TARGET_URL_SOURCES)
+			storage_directory_path STRING,
+			storage_file_path STRING,
+			storage_full_path STRING)`, TABLE_NAME_TARGET_URL_SOURCES)
 	DbConnection.Exec(cmd)
 }
