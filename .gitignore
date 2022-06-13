@@ -1,2 +1,2 @@
 config.ini
-htmls/target.html
+htmls/*.html
