@@ -26,7 +26,7 @@ func main() {
 		log.Println(error)
 	}
 
-	document.Find(".article-title-outer > a").Each(func(_ int, s *goquery.Selection) {
+	document.Find(config.Config.OriginSourceSelector).Each(func(_ int, s *goquery.Selection) {
 		url, _ := s.Attr("href")
 		targetUrl := models.NewTargetUrl(url, config.Config.TargetUrl)
 		if !models.IsTargetUrl(url) {
@@ -55,7 +55,7 @@ func main() {
 			log.Println(error)
 		}
 
-		document.Find(".article-title-outer > a").Each(func(_ int, s *goquery.Selection) {
+		document.Find(config.Config.SubSelector).Each(func(_ int, s *goquery.Selection) {
 			url, _ := s.Attr("href")
 			// 新規テーブルに保存
 			targetUrl := models.NewTargetUrl(url, config.Config.TargetUrl)
