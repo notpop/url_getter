@@ -9,6 +9,7 @@ import (
 type ConfigList struct {
 	TargetUrl   string
 	GetHtmlPath string
+	SearchLimit int
 	DbName      string
 	SQLDriver   string
 }
@@ -25,6 +26,7 @@ func init() {
 	Config = ConfigList{
 		TargetUrl:   cfg.Section("web").Key("target_url").String(),
 		GetHtmlPath: cfg.Section("web").Key("get_html_path").String(),
+		SearchLimit: cfg.Section("web").Key("search_limit").MustInt(),
 		DbName:      cfg.Section("db").Key("name").String(),
 		SQLDriver:   cfg.Section("db").Key("driver").String(),
 	}
