@@ -62,5 +62,7 @@ func main() {
 				targetUrl.Create()
 			}
 		})
+
+		// 新規テーブルに保存したurlをforで回しながらいい感じにpath整理してcrawl.SaveImageByTargetUrlDirectoryPathFilePathを呼び出す
 	}
 }
