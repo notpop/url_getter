@@ -53,7 +53,7 @@ func IsTargetUrl(targetUrl string) bool {
 }
 
 func GetAllTargetUrl(limit int) (dfTargetUrl *DataFrameTargetUrl, err error) {
-	cmd := fmt.Sprintf(`SELECT * FROM target_url, origin_source FROM %s WHERE is_completed = false LIMIT ?;`, TABLE_NAME_TARGET_URLS)
+	cmd := fmt.Sprintf(`SELECT * FROM %s WHERE is_completed = false LIMIT ?;`, TABLE_NAME_TARGET_URLS)
 	rows, err := DbConnection.Query(cmd, limit)
 	if err != nil {
 		return
@@ -63,8 +63,8 @@ func GetAllTargetUrl(limit int) (dfTargetUrl *DataFrameTargetUrl, err error) {
 	dfTargetUrl = &DataFrameTargetUrl{}
 	for rows.Next() {
 		var targetUrl TargetUrl
-		rows.Scan(&targetUrl.TargetUrl, &targetUrl.OriginSource)
-		dfTargetUrl.TargetUrls[targetUrl.OriginSource] = targetUrl.TargetUrl
+		rows.Scan(&targetUrl.TargetUrl, &targetUrl.OriginSource, &targetUrl.IsCompleted)
+		dfTargetUrl.TargetUrls = append(dfTargetUrl.TargetUrls, targetUrl.TargetUrl)
 	}
 	err = rows.Err()
 	if err != nil {

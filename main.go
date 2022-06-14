@@ -34,13 +34,14 @@ func main() {
 		}
 	})
 
-	cmd := fmt.Sprintf("INSERT INTO %s (image_source_url, target_url, storage_directory_path, storage_file_path, storage_full_path) VALUES (?, ?, ?, ?, ?)", models.TABLE_NAME_TARGET_URL_SOURCES)
-	models.DbConnection.Exec(cmd, "https://test.com/img/1", "https://test.com/", "images/1/", "1.html", "images/1/1.html")
+	dfTargetUrl, error := models.GetAllTargetUrl(config.Config.SearchLimit)
+	if error != nil {
+		log.Println(error)
+	}
 
-	// dfTargetUrl, error := models.GetAllTargetUrl(config.Config.SearchLimit)
-	// if error != nil {
-	// 	log.Println(error)
-	// }
+	fmt.Println(dfTargetUrl)
+	urls := dfTargetUrl.TargetUrls
+	fmt.Println(urls)
 
 	// for i, url := range dfTargetUrl.Urls() {
 	// 	statusCode, status := crawl.CheckStatusByTargetUrl(url)
@@ -59,11 +60,12 @@ func main() {
 	// 	}
 
 	// 	document.Find(config.Config.SubSelector).Each(func(_ int, s *goquery.Selection) {
-	// 		url, _ := s.Attr("src")
+	// 		image_source, _ := s.Attr("src")
 	// 		// 新規テーブルに保存
-	// 		targetUrl := models.NewTargetUrl(url, config.Config.TargetUrl)
-	// 		if !models.IsTargetUrl(url) {
-	// 			targetUrl.Create()
+	// 		strIndex := strconv.Itoa(i)
+	// 		targetUrlSource := models.NewTargetUrlSources(image_source, url, "images/"+strIndex+"/", strIndex+".html", "images/"+strIndex+"/"+strIndex+".html")
+	// 		if !models.IsTargetUrlSource(url) {
+	// 			targetUrlSource.Create()
 	// 		}
 	// 	})
 
