@@ -6,7 +6,7 @@ import (
 	"github.com/notpop/url_getter/crawl"
 	"github.com/notpop/url_getter/models"
 	"log"
-	// "strconv"
+	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -39,36 +39,35 @@ func main() {
 		log.Println(error)
 	}
 
-	fmt.Println(dfTargetUrl)
-	urls := dfTargetUrl.TargetUrls
-	fmt.Println(urls)
+	// 処理したurlをログとして出力させる必要がある -> どのurlを解析してどうだったのかが分かりずらいため。
+	for i, url := range dfTargetUrl.TargetUrls {
+		statusCode, status := crawl.CheckStatusByTargetUrl(url)
+		if statusCode != 200 {
+			log.Fatalf("status code error: %d %s", statusCode, status)
+		}
 
-	// for i, url := range dfTargetUrl.Urls() {
-	// 	statusCode, status := crawl.CheckStatusByTargetUrl(url)
-	// 	if statusCode != 200 {
-	// 		log.Fatalf("status code error: %d %s", statusCode, status)
-	// 	}
+		temporaryHtmlPath := "./htmls/" + strconv.Itoa(i) + ".html"
+		if !crawl.SaveHtmlByTargetUrl(url, temporaryHtmlPath) {
+			log.Fatal("could not save html")
+		}
 
-	// 	temporaryHtmlPath := "./htmls/" + strconv.Itoa(i) + ".html"
-	// 	if !crawl.SaveHtmlByTargetUrl(url, temporaryHtmlPath) {
-	// 		log.Fatal("could not save html")
-	// 	}
+		document, error := crawl.GetDocumentByHtmlPath(temporaryHtmlPath)
+		if error != nil {
+			log.Println(error)
+		}
 
-	// 	document, error := crawl.GetDocumentByHtmlPath(temporaryHtmlPath)
-	// 	if error != nil {
-	// 		log.Println(error)
-	// 	}
+		// ここforeach回ってなさそう・・・・。
+		document.Find(config.Config.SubSelector).Each(func(_ int, s *goquery.Selection) {
+			image_source, _ := s.Attr("src")
+			fmt.Println(image_source)
+			// 新規テーブルに保存
+			strIndex := strconv.Itoa(i)
+			targetUrlSource := models.NewTargetUrlSources(image_source, url, "images/"+strIndex+"/", strIndex+".html", "images/"+strIndex+"/"+strIndex+".html")
+			if !models.IsTargetUrlSource(url) {
+				targetUrlSource.Create()
+			}
+		})
 
-	// 	document.Find(config.Config.SubSelector).Each(func(_ int, s *goquery.Selection) {
-	// 		image_source, _ := s.Attr("src")
-	// 		// 新規テーブルに保存
-	// 		strIndex := strconv.Itoa(i)
-	// 		targetUrlSource := models.NewTargetUrlSources(image_source, url, "images/"+strIndex+"/", strIndex+".html", "images/"+strIndex+"/"+strIndex+".html")
-	// 		if !models.IsTargetUrlSource(url) {
-	// 			targetUrlSource.Create()
-	// 		}
-	// 	})
-
-	// 	// 新規テーブルに保存したurlをforで回しながらいい感じにpath整理してcrawl.SaveImageByTargetUrlDirectoryPathFilePathを呼び出す
-	// }
+		// 新規テーブルに保存したurlをforで回しながらいい感じにpath整理してcrawl.SaveImageByTargetUrlDirectoryPathFilePathを呼び出す
+	}
 }
